@@ -1,0 +1,70 @@
+<html>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<head>
+	<title>Garmin Activity Modifier</title>
+	<link type="text/css" href="jquery-ui.css" rel="Stylesheet"/>
+	<script type="text/javascript" src="jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="jquery-ui.js"></script>
+	<style>
+		input,label,button {
+			color:white;
+			font-family:verdana;
+			font-size:12px;
+			margin-bottom:10px;
+			margin-left:10px;
+		}
+		.checkbox {
+			font-family:verdana;
+			font-size:12px;
+		}
+		button {
+			margin-top:10px;
+		}
+	</style>
+	<script>
+		$(function()
+		{
+			$('#button').button().click(function()
+			{
+				var fileVal = $("#file").val();
+				if (fileVal != '' && fileVal.toLowerCase().match('.*\.fit'))
+				{
+					$("#form").submit();
+				}
+				else
+				{
+					window.alert("A .fit activity file needs to be selected"); 		
+				}
+			});
+			$('#button').css("font-size","12px").css("font-family","verdana");
+			
+			var hrefVal = window.location.href;
+			if (hrefVal.indexOf("message=") != -1)
+			{
+				var message = hrefVal.slice(hrefVal.indexOf("message=") + 8);
+				if (message.indexOf("&") != -1)
+					message = hrefVal.slice(0, message.indexOf("&"));
+				window.alert(decodeURIComponent(message).replace(/\+/g," "));
+			}
+		});
+	</script>
+</head>
+<body background="images/bg.jpg">
+	<div align="center">
+		<img src="images/garmin_modifier.png"/><br>
+		<form id="form" action="garminactivitymodifier" enctype="multipart/form-data" method="post">
+			 <label for="file">Activity File</label>
+			 <input style="color:black" type="file" size="40" id="file" name="file"/><br/><br>
+			 <input type="checkbox" id="changeTimestamp" title="Changes the timestamp of the activity file so that it can be uploaded to Garmin along with the original">
+			 <label class="checkbox" for="changeTimestamp" >Change Timestamp</label><br>
+			 <input type="checkbox" id="correctElevation" title="Corrects sample that are missing elevation data, causing spikes in the elevation chart, a larger Y axis than necessary, and incorrect Min/Max/Gained/Lost Elevation numbers">
+			 <label class="checkbox" for="correctElevation" >Correct Elevation</label><br>
+			 <input type="checkbox" id="correctStartupFluctuations" title="Fix samples at the start of the activity which can have big fluctuations while starting/issues with GPS sync etc.">
+			 <label class="checkbox" for="correctStartupFluctuations" >Correct Startup Fluctuations</label><br>
+			 <input type="checkbox" id="correctMidRunFluctuations" title="Fix samples mid-run with big fluctuations, perhaps losing GPS under bridges or trees/turning around/temporary stop etc. by using surrounding samples average">
+			 <label class="checkbox" for="correctMidRunFluctuations" >Correct Mid-Run Fluctuations</label>
+		</form>
+		<button id="button">Go</button>
+	</div>
+</body>
+</html>
