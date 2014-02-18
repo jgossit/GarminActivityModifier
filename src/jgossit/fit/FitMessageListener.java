@@ -416,21 +416,25 @@ public class FitMessageListener implements MesgListener, MesgDefinitionListener
 		if (!correctElevation)
 			return message;
 		
-		// no elevation data recorded, use last sample
+		// no elevation data recorded, use last good sample
 		if (message.startsWith("Data,6") && message.contains("distance") && !message.contains("semicircles"))
 		{
-			String previousSample = messages.get(messages.size()-1);
-			if (previousSample.startsWith("Data,6"))
+			int prevMessageIndex = messages.size() - 1;
+			while (prevMessageIndex >= 0)
 			{
-				int beginIndex = previousSample.indexOf("position_lat");
-				int endIndex = previousSample.indexOf("distance");
-				String previousDistance = previousSample.substring(beginIndex, endIndex);
-				message = message.replace("distance", previousDistance + "distance");
+				String previousSample = messages.get(prevMessageIndex);
+				if (previousSample.startsWith("Data,6") && message.contains("distance") && message.contains("semicircles"))
+				{
+					int beginIndex = previousSample.indexOf("position_lat");
+					int endIndex = previousSample.indexOf("distance");
+					String previousDistance = previousSample.substring(beginIndex, endIndex);
+					message = message.replace("distance", previousDistance + "distance");
+					break;
+				}
+				prevMessageIndex--;
 			}
-			else // first sample is bad, fix it up when we get to the next sample
-			{
+			if (prevMessageIndex < 0) // first sample is bad, fix it up when we get to the next sample
 				correctPreviousSample = true;
-			}
 		}
 		
 		if (correctPreviousSample && message.startsWith("Data,6") && message.contains("distance") && message.contains("semicircles"))
