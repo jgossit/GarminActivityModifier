@@ -333,8 +333,8 @@ public class FitMessageListener implements MesgListener, MesgDefinitionListener
 					averageSpeeds.add(lastTwentySpeedsAgg / NUM_SAMPLES_TO_AGGREGATE);
 			}
 			
-			lastTwentySpeedsAgg -= speedValues.get(i-20); // remove the earliest sample
-			averageSpeeds.add(lastTwentySpeedsAgg / 20);
+			lastTwentySpeedsAgg -= speedValues.get(i-NUM_SAMPLES_TO_AGGREGATE); // remove the earliest sample
+			averageSpeeds.add(lastTwentySpeedsAgg / NUM_SAMPLES_TO_AGGREGATE);
 		}
 		return averageSpeeds;
 	}
